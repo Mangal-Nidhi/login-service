@@ -24,14 +24,14 @@ public class UserProfileEntity {
     @Column(nullable = false)
     private Status status;
     @Column(nullable = false)
-    private Integer failedLoginAttempts;
+    private int failedLoginAttempts;
     @Column(nullable = false)
     private String userName;
     @Column
     private String password;
 
     public UserProfileEntity(String emailId, AuthenticationType authType, Status status,
-                             Integer failedLoginAttempts, String userName, String password) {
+                             int failedLoginAttempts, String userName, String password) {
         this.emailId = emailId;
         this.authType = authType;
         this.status = status;

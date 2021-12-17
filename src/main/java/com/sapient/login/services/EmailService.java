@@ -1,0 +1,51 @@
+package com.sapient.login.services;
+
+import org.springframework.stereotype.Service;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
+
+@Service
+public class EmailService {
+
+    public void sendEmail(String toEmailId, String message, String subject) {
+        String recipient = toEmailId;
+        String sender = "no-reply@pscode.com";
+
+        Properties properties = System.getProperties();
+        properties.setProperty("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "465");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.socketFactory.port", "465");
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+
+
+        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("", "");
+            }
+
+        });
+        try {
+            MimeMessage mimeMessage = new MimeMessage(session);
+            mimeMessage.setFrom(new InternetAddress(sender));
+            mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+            mimeMessage.setSubject(subject);
+            mimeMessage.setContent("<h1>" + message + "</h1>", "text/html");
+            //Transport.send(mimeMessage);
+        } catch (MessagingException ex) {
+            //TODO
+        }
+    }
+
+    public String getConfirmationEmailTemplate(Integer userId) {
+        return "<a href=\"http://localhost:8083/users/" + userId + "/confirm\">Verify Email</a>";
+    }
+}
+
+

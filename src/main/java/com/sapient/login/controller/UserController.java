@@ -3,6 +3,7 @@ package com.sapient.login.controller;
 import com.sapient.login.domain.UserProfile;
 import com.sapient.login.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,16 +33,32 @@ public class UserController {
 
     @GetMapping("{userId}")
     public ResponseEntity<UserProfile> getUserProfile(@PathVariable Integer userId) {
+        //verify JWT
         return ResponseEntity.ok(userService.getUserProfile(userId));
     }
 
     @DeleteMapping("{userId}")
     public void deleteUserProfile(@PathVariable Integer userId) {
+        //verify JWT
         userService.deleteUserProfile(userId);
     }
+
+    @GetMapping("{userId}/confirm")
+    public ResponseEntity confirmEmail(@PathVariable Integer userId) {
+        //verifyJwt
+        userService.confirmEmailId(userId);
+        return ResponseEntity.ok().build();
+    }
+
 
     @ExceptionHandler(value = {EntityNotFoundException.class, EmptyResultDataAccessException.class})
     public ResponseEntity<Object> handleNoResultException(Exception ex) {
         return new ResponseEntity<Object>("User Id doesn't exists!", HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(value = DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDuplicateIdException(DataIntegrityViolationException ex) {
+        return new ResponseEntity<Object>("Email Id is already registered!", HttpStatus.CONFLICT);
+    }
+
 }

@@ -1,12 +1,12 @@
 package com.sapient.login.services;
 
+import com.sapient.login.builder.UserProfileEntityBuilder;
 import com.sapient.login.domain.Status;
 import com.sapient.login.domain.UserProfile;
 import com.sapient.login.repository.UserProfileRepository;
 import com.sapient.login.repository.entity.UserProfileEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,19 +19,21 @@ public class UserService {
     @Autowired
     private UserProfileRepository userProfileRepository;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private UserProfileEntityBuilder userProfileEntityBuilder;
+    @Autowired
+    private EmailService emailService;
+
+
+    public Integer createUserProfile(UserProfile userProfile) {
+        Integer userId = saveUser(userProfile);
+        emailService.sendEmail(userProfile.getEmailId(), emailService.getConfirmationEmailTemplate(userId), "Verify Email");
+        return userId;
+    }
 
     @Transactional
-    public Integer createUserProfile(UserProfile userProfile) {
-        UserProfileEntity userProfileEntity = userProfileRepository.save(new UserProfileEntity(
-                userProfile.getEmailId(),
-                userProfile.getAuthType(),
-                Status.UNCONFIRMED,
-                0,
-                userProfile.getUserName(),
-                passwordEncoder.encode(userProfile.getPassword())
-        ));
-
+    private Integer saveUser(UserProfile userProfile) {
+        UserProfileEntity userProfileEntity = userProfileRepository.save(
+                userProfileEntityBuilder.build(userProfile));
         return userProfileEntity.getId();
     }
 
@@ -49,7 +51,17 @@ public class UserService {
 
     }
 
+    @Transactional
     public void deleteUserProfile(Integer userId) {
         userProfileRepository.deleteById(userId);
+    }
+
+    @Transactional
+    public void confirmEmailId(Integer userId) {
+        Optional<UserProfileEntity> entity = userProfileRepository.findById(userId);
+        entity.ifPresent(userProfileEntity -> {
+            userProfileEntity.setStatus(Status.ACTIVE);
+            userProfileRepository.save(userProfileEntity);
+        });
     }
 }

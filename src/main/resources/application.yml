@@ -1,5 +1,7 @@
 server:
   port: 8083
+  ssl:
+    enabled: false
 
 endpoints:
   health:
@@ -7,4 +9,18 @@ endpoints:
   shutdown:
     enabled: true
 
-name: Nidhi
+spring:
+  jpa:
+    hibernate:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/login"
+    username: postgres
+    password: postgresql
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 1024095120816-bt34rhqq074evbk2tf5hd03uqokq5n9b.apps.googleusercontent.com
+            clientSecret: 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

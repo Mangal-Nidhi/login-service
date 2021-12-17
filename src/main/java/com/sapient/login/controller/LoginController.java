@@ -1,17 +1,26 @@
 package com.sapient.login.controller;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.sapient.login.domain.AccessToken;
+import com.sapient.login.domain.UserCredentials;
+import com.sapient.login.services.LoginService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
+@RequestMapping("login")
 public class LoginController {
 
-    @Value("${name}")
-    private String name;
+    @Autowired
+    private LoginService loginService;
 
-    @GetMapping("/")
-    public String helloWorld(){
-        return "Hello " + name + "!";
+    @PostMapping
+    public ResponseEntity<AccessToken> login(@RequestBody @Valid UserCredentials userCredentials) {
+        return ResponseEntity.ok(loginService.authenticate(userCredentials));
     }
 }

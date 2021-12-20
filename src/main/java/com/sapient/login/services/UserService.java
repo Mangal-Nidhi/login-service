@@ -25,7 +25,6 @@ public class UserService {
     @Autowired
     private EmailService emailService;
 
-
     public Integer createUserProfile(UserProfile userProfile) {
         Integer userId = saveUser(userProfile);
         log.info("Added new user with email={}", userProfile.getEmailId());

@@ -9,6 +9,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,19 +36,16 @@ public class UserController {
 
     @GetMapping("{userId}")
     public ResponseEntity<UserProfile> getUserProfile(@PathVariable Integer userId) {
-        //verify JWT
         return ResponseEntity.ok(userService.getUserProfile(userId));
     }
 
     @DeleteMapping("{userId}")
     public void deleteUserProfile(@PathVariable Integer userId) {
-        //verify JWT
         userService.deleteUserProfile(userId);
     }
 
     @GetMapping("{userId}/confirm")
     public ResponseEntity<Object> confirmEmail(@PathVariable Integer userId) {
-        //verifyJwt
         userService.confirmEmailId(userId);
         return ResponseEntity.ok().build();
     }
@@ -61,6 +59,12 @@ public class UserController {
     @ExceptionHandler(value = DataIntegrityViolationException.class)
     public ResponseEntity<Object> handleDuplicateIdException(DataIntegrityViolationException ex) {
         return new ResponseEntity<>("Email Id is already registered!", HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = ResponseStatusException.class)
+    public ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex) {
+        log.error(ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
     }
 
 }

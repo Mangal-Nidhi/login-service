@@ -1,14 +1,12 @@
 package com.sapient.login.services;
 
+import com.sapient.login.builder.JWTBuilder;
 import com.sapient.login.builder.UserProfileEntityBuilder;
 import com.sapient.login.domain.LoginResponse;
 import com.sapient.login.domain.Status;
 import com.sapient.login.domain.UserCredentials;
 import com.sapient.login.repository.UserProfileRepository;
 import com.sapient.login.repository.entity.UserProfileEntity;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,12 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.security.Key;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -32,6 +25,8 @@ public class LoginService {
     private UserProfileRepository userProfileRepository;
     @Autowired
     private UserProfileEntityBuilder userProfileEntityBuilder;
+    @Autowired
+    private JWTBuilder jwtBuilder;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -52,7 +47,7 @@ public class LoginService {
         resetFailedAttemptCountOnSuccess(userProfileEntity.get(), loginAttemptCount);
 
         return LoginResponse.builder()
-                .accessToken(getSignedJWT(userCredentials.getEmailId()))
+                .accessToken(jwtBuilder.getSignedJWT(userCredentials.getEmailId()))
                 .tokenType("Bearer")
                 .build();
     }
@@ -89,34 +84,5 @@ public class LoginService {
             userProfileEntity.setStatus(Status.ACTIVE);
             userProfileRepository.save(userProfileEntity);
         }
-    }
-
-    public String getSignedJWT(String emailId) {
-        JwtBuilder jwtBuilder = Jwts.builder();
-        setHeaders(jwtBuilder);
-        setClaims(jwtBuilder, emailId);
-        return jwtBuilder
-                //.signWith(getPrivateKey(), SignatureAlgorithm.RS256)
-                .compact();
-    }
-
-    private void setHeaders(JwtBuilder jwtBuilder) {
-        jwtBuilder
-                .setHeaderParam("typ", "JWT")
-                .setHeaderParam("alg", SignatureAlgorithm.RS256);
-    }
-
-    private void setClaims(JwtBuilder jwtBuilder, String emailId) {
-        jwtBuilder
-                .setIssuer("PSCode")
-                .setSubject(emailId)
-                .setAudience("PSClient")
-                .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plus(24, ChronoUnit.HOURS)))
-                .setId(UUID.randomUUID().toString());
-    }
-
-    private Key getPrivateKey() {
-        return null;
     }
 }

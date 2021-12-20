@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -35,16 +36,19 @@ public class UserController {
     }
 
     @GetMapping("{userId}")
+    @RolesAllowed("PS_USER")
     public ResponseEntity<UserProfile> getUserProfile(@PathVariable Integer userId) {
         return ResponseEntity.ok(userService.getUserProfile(userId));
     }
 
     @DeleteMapping("{userId}")
+    @RolesAllowed("PS_USER")
     public void deleteUserProfile(@PathVariable Integer userId) {
         userService.deleteUserProfile(userId);
     }
 
     @GetMapping("{userId}/confirm")
+    @RolesAllowed("PS_USER")
     public ResponseEntity<Object> confirmEmail(@PathVariable Integer userId) {
         userService.confirmEmailId(userId);
         return ResponseEntity.ok().build();

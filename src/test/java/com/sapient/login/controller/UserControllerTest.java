@@ -1,7 +1,6 @@
-package com.sapient.login;
+package com.sapient.login.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sapient.login.controller.UserController;
 import com.sapient.login.domain.AuthenticationType;
 import com.sapient.login.domain.UserProfile;
 import com.sapient.login.services.UserService;

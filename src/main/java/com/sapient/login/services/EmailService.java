@@ -3,10 +3,7 @@ package com.sapient.login.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
@@ -25,8 +22,6 @@ public class EmailService {
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.socketFactory.port", "465");
         properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        properties.put("mail.smtp.ssl.checkserveridentity", true);
-
 
         Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
             @Override
@@ -41,9 +36,9 @@ public class EmailService {
             mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             mimeMessage.setSubject(subject);
             mimeMessage.setContent("<h1>" + message + "</h1>", "text/html");
-            //Transport.send(mimeMessage);
+            Transport.send(mimeMessage);
         } catch (MessagingException ex) {
-            //TODO
+            log.warn("Something went wrong while sending email. {}", ex.getMessage());
         }
     }
 

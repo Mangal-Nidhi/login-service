@@ -1,6 +1,5 @@
-package com.sapient.login;
+package com.sapient.login.controller;
 
-import com.sapient.login.controller.PingController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;

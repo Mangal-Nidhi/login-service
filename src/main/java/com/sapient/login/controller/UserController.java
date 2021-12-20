@@ -2,6 +2,7 @@ package com.sapient.login.controller;
 
 import com.sapient.login.domain.UserProfile;
 import com.sapient.login.services.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,6 +18,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("users")
+@Slf4j
 public class UserController {
 
     @Autowired

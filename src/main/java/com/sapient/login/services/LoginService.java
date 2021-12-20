@@ -9,6 +9,7 @@ import com.sapient.login.repository.entity.UserProfileEntity;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class LoginService {
 
     @Autowired
@@ -68,12 +70,15 @@ public class LoginService {
     private boolean verifyCredentials(UserProfileEntity userProfileEntity, UserCredentials userCredentials, int loginAttemptCount) {
         if (!passwordEncoder.matches(userCredentials.getPassword(), userProfileEntity.getPassword())) {
             userProfileEntity.setFailedLoginAttempts(loginAttemptCount + 1);
-            if (loginAttemptCount == 2) {
+            if (userProfileEntity.getFailedLoginAttempts() == 3) {
                 userProfileEntity.setStatus(Status.LOCKED);
+                log.warn("Locked user with id={}", userProfileEntity.getId());
             }
             userProfileRepository.save(userProfileEntity);
+            log.info("User credentials not valid for id={}", userProfileEntity.getId());
             return false;
         }
+        log.info("User authenticated with id={}", userProfileEntity.getId());
         return true;
     }
 

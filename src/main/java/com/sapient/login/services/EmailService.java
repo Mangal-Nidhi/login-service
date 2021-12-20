@@ -1,5 +1,6 @@
 package com.sapient.login.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Message;
@@ -11,6 +12,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 @Service
+@Slf4j
 public class EmailService {
 
     public void sendEmail(String toEmailId, String message, String subject) {

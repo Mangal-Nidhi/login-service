@@ -34,12 +34,12 @@ public class UserControllerTest {
     private UserService service;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         when(service.createUserProfile(any(UserProfile.class))).thenReturn(123);
     }
 
     @Test
-    public void verify_createUserProfile_WithValidDetails_returns200() throws Exception {
+    void verify_createUserProfile_WithValidDetails_returns200() throws Exception {
         mvc.perform(MockMvcRequestBuilders
                         .post("/users")
                         .content(objectMapper.writeValueAsString(new UserProfile.Builder()
@@ -55,7 +55,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void verify_createUserProfile_WithInValidEmail_returns400() throws Exception {
+    void verify_createUserProfile_WithInValidEmail_returns400() throws Exception {
         mvc.perform(MockMvcRequestBuilders
                         .post("/users")
                         .content(new ObjectMapper().writeValueAsBytes(new UserProfile.Builder()
@@ -70,7 +70,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void verify_createUserProfile_WithInValidPassword_returns400() throws Exception {
+    void verify_createUserProfile_WithInValidPassword_returns400() throws Exception {
         mvc.perform(MockMvcRequestBuilders
                         .post("/users")
                         .content(new ObjectMapper().writeValueAsBytes(new UserProfile.Builder()
@@ -85,7 +85,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void verify_createUserProfile_WithInValidUsername_returns400() throws Exception {
+    void verify_createUserProfile_WithInValidUsername_returns400() throws Exception {
         String error = mvc.perform(MockMvcRequestBuilders
                         .post("/users")
                         .content(new ObjectMapper().writeValueAsBytes(new UserProfile.Builder()
@@ -103,7 +103,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void verify_createUserProfile_WithEmptyPayload_returns400() throws Exception {
+    void verify_createUserProfile_WithEmptyPayload_returns400() throws Exception {
         mvc.perform(MockMvcRequestBuilders
                         .post("/users")
                         .content("")
@@ -113,7 +113,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void verify_getUserProfile_returns200() throws Exception {
+    void verify_getUserProfile_returns200() throws Exception {
         mvc.perform(MockMvcRequestBuilders
                         .get("/users/123"))
                 .andDo(print())
@@ -121,7 +121,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void verify_getUserProfile_WithInvalidUserId_returns404() throws Exception {
+    void verify_getUserProfile_WithInvalidUserId_returns404() throws Exception {
         when(service.getUserProfile(123)).thenThrow(new EntityNotFoundException());
         mvc.perform(MockMvcRequestBuilders
                         .get("/users/123"))
@@ -130,7 +130,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void verify_deleteUserProfile_returns200() throws Exception {
+    void verify_deleteUserProfile_returns200() throws Exception {
         mvc.perform(MockMvcRequestBuilders
                         .delete("/users/123"))
                 .andDo(print())

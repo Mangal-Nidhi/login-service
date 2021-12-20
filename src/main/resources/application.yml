@@ -22,5 +22,8 @@ spring:
       #  client:
       #   registration:
       #  google:
-      #    clientId: 1024095120816-bt34rhqq074evbk2tf5hd03uqokq5n9b.apps.googleusercontent.com
+    #    clientId: 1024095120816-bt34rhqq074evbk2tf5hd03uqokq5n9b.apps.googleusercontent.com
     #    clientSecret: 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
+
+logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+logging.level.org.springframework.web.client.RestTemplate: DEBUG

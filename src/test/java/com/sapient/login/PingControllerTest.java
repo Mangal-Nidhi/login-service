@@ -20,7 +20,7 @@ public class PingControllerTest {
     private MockMvc mvc;
 
     @Test
-    public void getHello() throws Exception {
+    void getHello() throws Exception {
         mvc.perform(MockMvcRequestBuilders
                         .get("/ping")
                         .accept(MediaType.APPLICATION_JSON))

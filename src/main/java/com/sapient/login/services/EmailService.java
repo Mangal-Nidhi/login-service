@@ -25,6 +25,7 @@ public class EmailService {
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.socketFactory.port", "465");
         properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.put("mail.smtp.ssl.checkserveridentity", true);
 
 
         Session session = Session.getInstance(properties, new javax.mail.Authenticator() {

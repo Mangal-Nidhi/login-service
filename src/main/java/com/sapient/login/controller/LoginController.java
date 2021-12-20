@@ -26,6 +26,6 @@ public class LoginController {
 
     @ExceptionHandler(value = ResponseStatusException.class)
     public ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex) {
-        return new ResponseEntity<Object>(ex.getMessage(), ex.getStatus());
+        return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
     }
 }

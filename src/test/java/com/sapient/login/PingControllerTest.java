@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PingController.class)
-public class PingControllerTest {
+class PingControllerTest {
 
     @Autowired
     private MockMvc mvc;

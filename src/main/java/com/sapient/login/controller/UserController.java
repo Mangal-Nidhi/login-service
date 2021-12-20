@@ -25,8 +25,8 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity createUserProfile(@RequestBody @NotNull @Valid UserProfile userProfile,
-                                            HttpServletRequest request) {
+    public ResponseEntity<Object> createUserProfile(@RequestBody @NotNull @Valid UserProfile userProfile,
+                                                    HttpServletRequest request) {
         Integer userId = userService.createUserProfile(userProfile);
         return ResponseEntity
                 .created(URI.create(request.getRequestURI().concat("/").concat(userId.toString())))
@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @GetMapping("{userId}/confirm")
-    public ResponseEntity confirmEmail(@PathVariable Integer userId) {
+    public ResponseEntity<Object> confirmEmail(@PathVariable Integer userId) {
         //verifyJwt
         userService.confirmEmailId(userId);
         return ResponseEntity.ok().build();
@@ -55,12 +55,12 @@ public class UserController {
 
     @ExceptionHandler(value = {EntityNotFoundException.class, EmptyResultDataAccessException.class})
     public ResponseEntity<Object> handleNoResultException(Exception ex) {
-        return new ResponseEntity<Object>("User Id doesn't exists!", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("User Id doesn't exists!", HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = DataIntegrityViolationException.class)
     public ResponseEntity<Object> handleDuplicateIdException(DataIntegrityViolationException ex) {
-        return new ResponseEntity<Object>("Email Id is already registered!", HttpStatus.CONFLICT);
+        return new ResponseEntity<>("Email Id is already registered!", HttpStatus.CONFLICT);
     }
 
 }

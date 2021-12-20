@@ -19,11 +19,10 @@ pipeline {
       }
       stage('Sonar') {
                      steps {
-                        sh "./mvnw verify sonar:sonar \
-                                     -Dsonar.projectKey=Login-Service \
-                                     -Dsonar.host.url=http://localhost:9000 \
-                                     -Dsonar.login=a083cb08c453b7fcb9ff659487e8f98b433b01fb
-"
+                        sh "./mvnw verify sonar:sonar
+                        -Dsonar.projectKey=Login-Service
+                        -Dsonar.host.url=http://localhost:9000
+                        -Dsonar.login=a083cb08c453b7fcb9ff659487e8f98b433b01fb"
                      }
       }
    }

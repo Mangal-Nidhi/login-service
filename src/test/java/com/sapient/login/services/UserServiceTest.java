@@ -82,7 +82,7 @@ class UserServiceTest {
     @Test
     void verify_DeleteUserProfile() throws Exception {
         serviceUnderTest.deleteUserProfile(123);
-        verify(repository).deleteById(345);
+        verify(repository).deleteById(123);
     }
 
     @Test

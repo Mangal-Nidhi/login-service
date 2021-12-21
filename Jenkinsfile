@@ -8,7 +8,7 @@ pipeline {
       }
       stage('Test') {
                steps {
-                  sh "./mvnw test"
+                  sh "./mvnw test surefire-report:report"
                }
                post {
                   success {

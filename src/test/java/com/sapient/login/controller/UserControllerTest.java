@@ -136,4 +136,12 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void verify_ConfirmUserProfile_returns200() throws Exception {
+        mvc.perform(MockMvcRequestBuilders
+                        .get("/users/123/confirm"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }

@@ -34,12 +34,13 @@ class LoginServiceTest {
     private JWTBuilder jwtBuilder;
     @InjectMocks
     private LoginService loginService;
+    private UserCredentials userCredentials = new UserCredentials("testUser@ps.com", "password");
 
     @Test
     void test_authenticate_WithInValidEmailId() throws Exception {
         when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.empty());
         ResponseStatusException thrown = assertThrows(ResponseStatusException.class,
-                () -> loginService.authenticate(new UserCredentials("testUser@ps.com", "password")));
+                () -> loginService.authenticate(userCredentials));
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
         assertEquals("404 NOT_FOUND \"Email Id doesn't exist!\"", thrown.getMessage());
     }
@@ -49,8 +50,9 @@ class LoginServiceTest {
         UserProfileEntity entity = mock(UserProfileEntity.class);
         when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.of(entity));
         when(entity.getStatus()).thenReturn(Status.CONFIRM_PENDING);
-        ResponseStatusException thrown = assertThrows(ResponseStatusException.class,
-                () -> loginService.authenticate(new UserCredentials("testUser@ps.com", "password")));
+
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> loginService.authenticate(userCredentials));
+
         assertEquals(HttpStatus.FORBIDDEN, thrown.getStatus());
         assertEquals("403 FORBIDDEN \"Verify registered email to access the account.\"", thrown.getMessage());
     }
@@ -60,8 +62,9 @@ class LoginServiceTest {
         UserProfileEntity entity = mock(UserProfileEntity.class);
         when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.of(entity));
         when(entity.getStatus()).thenReturn(Status.LOCKED);
-        ResponseStatusException thrown = assertThrows(ResponseStatusException.class,
-                () -> loginService.authenticate(new UserCredentials("testUser@ps.com", "password")));
+
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> loginService.authenticate(userCredentials));
+
         assertEquals(HttpStatus.FORBIDDEN, thrown.getStatus());
         assertEquals("403 FORBIDDEN \"Account is locked due to 3 consecutive failure attempts, please contact admin!\"", thrown.getMessage());
     }
@@ -73,8 +76,8 @@ class LoginServiceTest {
         when(entity.getStatus()).thenReturn(Status.ACTIVE);
         when(entity.getFailedLoginAttempts()).thenReturn(0);
         when(entity.getPassword()).thenReturn("bjhgjhjgh");
-        ResponseStatusException thrown = assertThrows(ResponseStatusException.class,
-                () -> loginService.authenticate(new UserCredentials("testUser@ps.com", "password")));
+
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> loginService.authenticate(userCredentials));
 
         assertEquals(HttpStatus.UNAUTHORIZED, thrown.getStatus());
         assertEquals("401 UNAUTHORIZED \"Incorrect EmailId or password!\"", thrown.getMessage());
@@ -90,8 +93,8 @@ class LoginServiceTest {
         when(entity.getStatus()).thenReturn(Status.ACTIVE);
         when(entity.getFailedLoginAttempts()).thenReturn(2);
         when(entity.getPassword()).thenReturn("bnnbbnbnv");
-        ResponseStatusException thrown = assertThrows(ResponseStatusException.class,
-                () -> loginService.authenticate(new UserCredentials("testUser@ps.com", "password")));
+
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> loginService.authenticate(userCredentials));
 
         assertEquals(HttpStatus.UNAUTHORIZED, thrown.getStatus());
         assertEquals("401 UNAUTHORIZED \"Incorrect EmailId or password!\"", thrown.getMessage());
@@ -109,7 +112,8 @@ class LoginServiceTest {
         when(entity.getFailedLoginAttempts()).thenReturn(0);
         when(entity.getPassword()).thenReturn("password");
         when(passwordEncoder.matches("password", "password")).thenReturn(true);
-        loginService.authenticate(new UserCredentials("testUser@ps.com", "password"));
+
+        loginService.authenticate(userCredentials);
 
         verify(repository, times(0)).save(any(UserProfileEntity.class));
         verify(jwtBuilder).getSignedJWT("testUser@ps.com");
@@ -123,7 +127,8 @@ class LoginServiceTest {
         when(entity.getFailedLoginAttempts()).thenReturn(2);
         when(entity.getPassword()).thenReturn("password");
         when(passwordEncoder.matches("password", "password")).thenReturn(true);
-        loginService.authenticate(new UserCredentials("testUser@ps.com", "password"));
+
+        loginService.authenticate(userCredentials);
 
         verify(entity).setFailedLoginAttempts(0);
         verify(entity).setStatus(Status.ACTIVE);

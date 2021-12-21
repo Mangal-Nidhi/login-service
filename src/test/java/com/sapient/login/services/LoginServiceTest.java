@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class LoginServiceTest {
+class LoginServiceTest {
 
     @Mock
     private UserProfileRepository repository;
@@ -36,7 +36,7 @@ public class LoginServiceTest {
     private LoginService loginService;
 
     @Test
-    public void test_authenticate_WithInValidEmailId() {
+    void test_authenticate_WithInValidEmailId() throws Exception {
         when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.empty());
         ResponseStatusException thrown = assertThrows(ResponseStatusException.class,
                 () -> loginService.authenticate(new UserCredentials("testUser@ps.com", "password")));
@@ -45,7 +45,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void test_authenticate_WithInactiveAccount() {
+    void test_authenticate_WithInactiveAccount() throws Exception {
         UserProfileEntity entity = mock(UserProfileEntity.class);
         when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.of(entity));
         when(entity.getStatus()).thenReturn(Status.CONFIRM_PENDING);
@@ -56,7 +56,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void test_authenticate_WithLockedAccount() {
+    void test_authenticate_WithLockedAccount() throws Exception {
         UserProfileEntity entity = mock(UserProfileEntity.class);
         when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.of(entity));
         when(entity.getStatus()).thenReturn(Status.LOCKED);
@@ -67,7 +67,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void test_authenticate_WithInvalidPassword() {
+    void test_authenticate_WithInvalidPassword() throws Exception {
         UserProfileEntity entity = mock(UserProfileEntity.class);
         when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.of(entity));
         when(entity.getStatus()).thenReturn(Status.ACTIVE);
@@ -84,7 +84,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void test_authenticate_WithInvalidPassword_3FailedAttempts_LocksAccount() {
+    void test_authenticate_WithInvalidPassword_3FailedAttempts_LocksAccount() throws Exception {
         UserProfileEntity entity = mock(UserProfileEntity.class);
         when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.of(entity));
         when(entity.getStatus()).thenReturn(Status.ACTIVE);
@@ -102,7 +102,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void test_authenticate_WithValidUserCredentials() {
+    void test_authenticate_WithValidUserCredentials() throws Exception {
         UserProfileEntity entity = mock(UserProfileEntity.class);
         when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.of(entity));
         when(entity.getStatus()).thenReturn(Status.ACTIVE);
@@ -116,7 +116,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void test_authenticateSuccessful_FailedLoginAttemptsResets() {
+    void test_authenticateSuccessful_FailedLoginAttemptsResets() throws Exception {
         UserProfileEntity entity = mock(UserProfileEntity.class);
         when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.of(entity));
         when(entity.getStatus()).thenReturn(Status.ACTIVE);

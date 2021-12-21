@@ -49,7 +49,7 @@ class UserServiceTest {
         verify(userProfileEntityBuilder).build(userProfile);
         verify(repository).save(any(UserProfileEntity.class));
         verify(entity).getId();
-        verify(emailService).sendEmail(eq("testUser@gmail.com"), eq("message"), eq("Verify Email"));
+        verify(emailService).sendEmail("testUser@gmail.com", "message", "Verify Email");
 
     }
 

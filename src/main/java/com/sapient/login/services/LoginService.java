@@ -33,12 +33,12 @@ public class LoginService {
     public LoginResponse authenticate(UserCredentials userCredentials) {
         Optional<UserProfileEntity> userProfileEntity = userProfileRepository.findByEmailId(userCredentials.getEmailId());
         if (userProfileEntity.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Email Id doesn't exists!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Email Id doesn't exist!");
         }
 
-        int loginAttemptCount = userProfileEntity.get().getFailedLoginAttempts();
         verifyAccountActive(userProfileEntity.get());
 
+        int loginAttemptCount = userProfileEntity.get().getFailedLoginAttempts();
         boolean authenticated = verifyCredentials(userProfileEntity.get(), userCredentials, loginAttemptCount);
         if (!authenticated) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect EmailId or password!");

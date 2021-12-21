@@ -1,5 +1,7 @@
 package com.sapient.login.builder;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,8 @@ import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class JWTBuilderTest {
@@ -25,10 +29,12 @@ class JWTBuilderTest {
 
     @Test
     void verify_ValidJWT() throws Exception {
-        Jwts.parserBuilder()
+        Jws<Claims> claims = Jwts.parserBuilder()
                 .setSigningKey(getPublicKey())
                 .build()
                 .parseClaimsJws(builderUnderTest.getSignedJWT("testUser@gmail.com"));
+
+        assertEquals("testUser@gmail.com", claims.getBody().getSubject());
     }
 
     private PublicKey getPublicKey() throws Exception {

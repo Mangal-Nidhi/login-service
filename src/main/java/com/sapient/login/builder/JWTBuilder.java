@@ -46,10 +46,10 @@ public class JWTBuilder {
         Claims claims = Jwts.claims();
         claims.put("permissions", Collections.singleton("PS_USER"));
         jwtBuilder
+                .setClaims(claims)
                 .setIssuer("PSCode")
                 .setSubject(subject)
                 .setAudience("PSClient")
-                .setClaims(claims)
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(Instant.now().plus(24, ChronoUnit.HOURS)))
                 .setId(UUID.randomUUID().toString());

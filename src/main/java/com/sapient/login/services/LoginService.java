@@ -65,7 +65,7 @@ public class LoginService {
     private boolean verifyCredentials(UserProfileEntity userProfileEntity, UserCredentials userCredentials, int loginAttemptCount) {
         if (!passwordEncoder.matches(userCredentials.getPassword(), userProfileEntity.getPassword())) {
             userProfileEntity.setFailedLoginAttempts(loginAttemptCount + 1);
-            if (userProfileEntity.getFailedLoginAttempts() == 3) {
+            if (loginAttemptCount == 2) {
                 userProfileEntity.setStatus(Status.LOCKED);
                 log.warn("Locked user with id={}", userProfileEntity.getId());
             }

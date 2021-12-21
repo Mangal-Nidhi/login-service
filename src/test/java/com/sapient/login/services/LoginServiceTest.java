@@ -19,8 +19,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LoginServiceTest {
@@ -76,9 +75,59 @@ public class LoginServiceTest {
         when(entity.getPassword()).thenReturn("bjhgjhjgh");
         ResponseStatusException thrown = assertThrows(ResponseStatusException.class,
                 () -> loginService.authenticate(new UserCredentials("testUser@ps.com", "password")));
+
         assertEquals(HttpStatus.UNAUTHORIZED, thrown.getStatus());
         assertEquals("401 UNAUTHORIZED \"Incorrect EmailId or password!\"", thrown.getMessage());
+
+        verify(entity).setFailedLoginAttempts(1);
+        verify(repository, times(1)).save(entity);
     }
 
+    @Test
+    public void test_authenticate_WithInvalidPassword_3FailedAttempts_LocksAccount() {
+        UserProfileEntity entity = mock(UserProfileEntity.class);
+        when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.of(entity));
+        when(entity.getStatus()).thenReturn(Status.ACTIVE);
+        when(entity.getFailedLoginAttempts()).thenReturn(2);
+        when(entity.getPassword()).thenReturn("bnnbbnbnv");
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class,
+                () -> loginService.authenticate(new UserCredentials("testUser@ps.com", "password")));
 
+        assertEquals(HttpStatus.UNAUTHORIZED, thrown.getStatus());
+        assertEquals("401 UNAUTHORIZED \"Incorrect EmailId or password!\"", thrown.getMessage());
+
+        verify(entity).setFailedLoginAttempts(3);
+        verify(entity).setStatus(Status.LOCKED);
+        verify(repository, times(1)).save(entity);
+    }
+
+    @Test
+    public void test_authenticate_WithValidUserCredentials() {
+        UserProfileEntity entity = mock(UserProfileEntity.class);
+        when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.of(entity));
+        when(entity.getStatus()).thenReturn(Status.ACTIVE);
+        when(entity.getFailedLoginAttempts()).thenReturn(0);
+        when(entity.getPassword()).thenReturn("password");
+        when(passwordEncoder.matches("password", "password")).thenReturn(true);
+        loginService.authenticate(new UserCredentials("testUser@ps.com", "password"));
+
+        verify(repository, times(0)).save(any(UserProfileEntity.class));
+        verify(jwtBuilder).getSignedJWT("testUser@ps.com");
+    }
+
+    @Test
+    public void test_authenticateSuccessful_FailedLoginAttemptsResets() {
+        UserProfileEntity entity = mock(UserProfileEntity.class);
+        when(repository.findByEmailId("testUser@ps.com")).thenReturn(Optional.of(entity));
+        when(entity.getStatus()).thenReturn(Status.ACTIVE);
+        when(entity.getFailedLoginAttempts()).thenReturn(2);
+        when(entity.getPassword()).thenReturn("password");
+        when(passwordEncoder.matches("password", "password")).thenReturn(true);
+        loginService.authenticate(new UserCredentials("testUser@ps.com", "password"));
+
+        verify(entity).setFailedLoginAttempts(0);
+        verify(entity).setStatus(Status.ACTIVE);
+        verify(repository, times(1)).save(entity);
+        verify(jwtBuilder).getSignedJWT("testUser@ps.com");
+    }
 }

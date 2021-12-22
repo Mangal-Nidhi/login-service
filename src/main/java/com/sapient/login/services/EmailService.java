@@ -9,7 +9,7 @@ public class EmailService {
 
     }
 
-    public String getConfirmationEmailTemplate(Integer userId) {
+    public String getConfirmationEmailTemplate(String userId) {
         return "<a href=\"http://localhost:8083/users/" + userId + "/confirm\">Verify Email</a>";
     }
 }

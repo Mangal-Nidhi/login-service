@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import javax.persistence.EntityNotFoundException;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +35,7 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(service.createUserProfile(any(UserProfile.class))).thenReturn(123);
+        when(service.createUserProfile(any(UserProfile.class))).thenReturn("123");
     }
 
     @Test
@@ -122,7 +122,7 @@ class UserControllerTest {
 
     @Test
     void verify_getUserProfile_WithInvalidUserId_returns404() throws Exception {
-        when(service.getUserProfile(123)).thenThrow(new EntityNotFoundException());
+        when(service.getUserProfile("123")).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
         mvc.perform(MockMvcRequestBuilders
                         .get("/users/123"))
                 .andDo(print())

@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserProfile {
 
-    private Integer userId;
+    private String userId;
     @NotNull(message = "EmailId can't be null")
     @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "EmailId format is not valid.")
     private String emailId;
@@ -30,13 +30,13 @@ public class UserProfile {
     private AuthenticationType authType;
 
     public static class Builder {
-        private Integer userId;
+        private String userId;
         private String emailId;
         private String userName;
         private String password;
         private AuthenticationType authType;
 
-        public Builder withUserId(Integer userId) {
+        public Builder withUserId(String userId) {
             this.userId = userId;
             return this;
         }

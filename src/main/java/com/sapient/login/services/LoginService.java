@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -67,13 +67,13 @@ public class LoginService {
             userProfileEntity.setFailedLoginAttempts(loginAttemptCount + 1);
             if (loginAttemptCount == 2) {
                 userProfileEntity.setStatus(Status.LOCKED);
-                log.warn("Locked user with id={}", userProfileEntity.getId());
+                log.warn("Locked user with id={}", userProfileEntity.getObjectId());
             }
             userProfileRepository.save(userProfileEntity);
-            log.info("User credentials not valid for id={}", userProfileEntity.getId());
+            log.info("User credentials not valid for id={}", userProfileEntity.getObjectId());
             return false;
         }
-        log.info("User authenticated with id={}", userProfileEntity.getId());
+        log.info("User authenticated with id={}", userProfileEntity.getObjectId());
         return true;
     }
 

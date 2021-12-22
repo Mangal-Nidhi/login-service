@@ -5,29 +5,24 @@ import com.sapient.login.domain.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-
-@Entity
+@Document
 @Getter
 @Setter
 @NoArgsConstructor
 public class UserProfileEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-    @Column(nullable = false, unique = true)
+    private String objectId;
+    @Indexed(unique = true)
     private String emailId;
-    @Column(nullable = false)
     private AuthenticationType authType;
-    @Column(nullable = false)
     private Status status;
-    @Column(nullable = false)
     private int failedLoginAttempts;
-    @Column(nullable = false)
     private String userName;
-    @Column
     private String password;
 
     public UserProfileEntity(String emailId, AuthenticationType authType, Status status,

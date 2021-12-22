@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.security.RolesAllowed;
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -29,7 +28,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<Object> createUserProfile(@RequestBody @NotNull @Valid UserProfile userProfile,
                                                     HttpServletRequest request) {
-        Integer userId = userService.createUserProfile(userProfile);
+        String userId = userService.createUserProfile(userProfile);
         return ResponseEntity
                 .created(URI.create(request.getRequestURI().concat("/").concat(userId.toString())))
                 .build();
@@ -37,25 +36,25 @@ public class UserController {
 
     @GetMapping("{userId}")
     @RolesAllowed("PS_USER")
-    public ResponseEntity<UserProfile> getUserProfile(@PathVariable Integer userId) {
+    public ResponseEntity<UserProfile> getUserProfile(@PathVariable String userId) {
         return ResponseEntity.ok(userService.getUserProfile(userId));
     }
 
     @DeleteMapping("{userId}")
     @RolesAllowed("PS_USER")
-    public void deleteUserProfile(@PathVariable Integer userId) {
+    public void deleteUserProfile(@PathVariable String userId) {
         userService.deleteUserProfile(userId);
     }
 
     @GetMapping("{userId}/confirm")
     @RolesAllowed("PS_USER")
-    public ResponseEntity<Object> confirmEmail(@PathVariable Integer userId) {
+    public ResponseEntity<Object> confirmEmail(@PathVariable String userId) {
         userService.confirmEmailId(userId);
         return ResponseEntity.ok().build();
     }
 
 
-    @ExceptionHandler(value = {EntityNotFoundException.class, EmptyResultDataAccessException.class})
+    @ExceptionHandler(value = {EmptyResultDataAccessException.class})
     public ResponseEntity<Object> handleNoResultException(Exception ex) {
         return new ResponseEntity<>("User Id doesn't exists!", HttpStatus.NOT_FOUND);
     }

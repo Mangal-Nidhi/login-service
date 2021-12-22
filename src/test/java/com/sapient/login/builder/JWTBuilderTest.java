@@ -42,6 +42,4 @@ class JWTBuilderTest {
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePublic(keySpec);
     }
-
-
 }

@@ -39,23 +39,23 @@ class UserServiceTest {
         UserProfileEntity entity = mock(UserProfileEntity.class);
         when(userProfileEntityBuilder.build(userProfile)).thenReturn(entity);
         when(repository.save(entity)).thenReturn(entity);
-        when(entity.getId()).thenReturn(123);
+        when(entity.getObjectId()).thenReturn("123");
         when(userProfile.getEmailId()).thenReturn("testUser@gmail.com");
-        when(emailService.getConfirmationEmailTemplate(123)).thenReturn("message");
+        when(emailService.getConfirmationEmailTemplate("123")).thenReturn("message");
 
-        Integer userId = serviceUnderTest.createUserProfile(userProfile);
+        String userId = serviceUnderTest.createUserProfile(userProfile);
 
-        assertEquals(123, userId);
+        assertEquals("123", userId);
         verify(userProfileEntityBuilder).build(userProfile);
         verify(repository).save(any(UserProfileEntity.class));
-        verify(entity).getId();
+        verify(entity).getObjectId();
         verify(emailService).sendEmail("testUser@gmail.com", "message", "Verify Email");
 
     }
 
     @Test
     void verify_GetUserProfile_WIthInvalidUserId() throws Exception {
-        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> serviceUnderTest.getUserProfile(345));
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> serviceUnderTest.getUserProfile("345"));
 
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatus());
         assertEquals("404 NOT_FOUND", thrown.getMessage());
@@ -64,35 +64,35 @@ class UserServiceTest {
     @Test
     void verify_GetUserProfile_WIthValidUserId() throws Exception {
         UserProfileEntity entity = mock(UserProfileEntity.class);
-        when(repository.findById(345)).thenReturn(Optional.of(entity));
-        when(entity.getId()).thenReturn(345);
+        when(repository.findById("345")).thenReturn(Optional.of(entity));
+        when(entity.getObjectId()).thenReturn("345");
         when(entity.getEmailId()).thenReturn("testUser@gmail.com");
         when(entity.getAuthType()).thenReturn(AuthenticationType.DATABASE);
         when(entity.getUserName()).thenReturn("Test User");
 
-        UserProfile userProfile = serviceUnderTest.getUserProfile(345);
+        UserProfile userProfile = serviceUnderTest.getUserProfile("345");
 
-        assertEquals(345, userProfile.getUserId());
+        assertEquals("345", userProfile.getUserId());
         assertEquals("testUser@gmail.com", userProfile.getEmailId());
         assertEquals("Test User", userProfile.getUserName());
         assertEquals(AuthenticationType.DATABASE, userProfile.getAuthType());
-        verify(repository).findById(345);
+        verify(repository).findById("345");
     }
 
     @Test
     void verify_DeleteUserProfile() throws Exception {
-        serviceUnderTest.deleteUserProfile(123);
-        verify(repository).deleteById(123);
+        serviceUnderTest.deleteUserProfile("123");
+        verify(repository).deleteById("123");
     }
 
     @Test
     void verify_ConfirmUserProfile() throws Exception {
         UserProfileEntity entity = mock(UserProfileEntity.class);
-        when(repository.findById(123)).thenReturn(Optional.of(entity));
+        when(repository.findById("123")).thenReturn(Optional.of(entity));
 
-        serviceUnderTest.confirmEmailId(123);
+        serviceUnderTest.confirmEmailId("123");
 
-        verify(repository).findById(123);
+        verify(repository).findById("123");
         verify(entity).setStatus(Status.ACTIVE);
         verify(repository).save(entity);
     }

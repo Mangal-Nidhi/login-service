@@ -62,7 +62,7 @@ public class LoginService {
     }
 
     @Transactional
-    private boolean verifyCredentials(UserProfileEntity userProfileEntity, UserCredentials userCredentials, int loginAttemptCount) {
+    public boolean verifyCredentials(UserProfileEntity userProfileEntity, UserCredentials userCredentials, int loginAttemptCount) {
         if (!passwordEncoder.matches(userCredentials.getPassword(), userProfileEntity.getPassword())) {
             userProfileEntity.setFailedLoginAttempts(loginAttemptCount + 1);
             if (loginAttemptCount == 2) {
@@ -78,7 +78,7 @@ public class LoginService {
     }
 
     @Transactional
-    private void resetFailedAttemptCountOnSuccess(UserProfileEntity userProfileEntity, int loginAttemptCount) {
+    public void resetFailedAttemptCountOnSuccess(UserProfileEntity userProfileEntity, int loginAttemptCount) {
         if (loginAttemptCount > 0) {
             userProfileEntity.setFailedLoginAttempts(0);
             userProfileEntity.setStatus(Status.ACTIVE);

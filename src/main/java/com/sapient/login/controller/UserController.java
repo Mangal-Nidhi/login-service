@@ -20,6 +20,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("users")
 @Slf4j
+@CrossOrigin
 public class UserController {
 
     @Autowired

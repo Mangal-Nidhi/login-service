@@ -14,6 +14,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("login")
 @Slf4j
+@CrossOrigin
 public class LoginController {
 
     @Autowired

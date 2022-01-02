@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
@@ -61,7 +60,6 @@ public class LoginService {
         }
     }
 
-    @Transactional
     public boolean verifyCredentials(UserProfileEntity userProfileEntity, UserCredentials userCredentials, int loginAttemptCount) {
         if (!passwordEncoder.matches(userCredentials.getPassword(), userProfileEntity.getPassword())) {
             userProfileEntity.setFailedLoginAttempts(loginAttemptCount + 1);
@@ -77,7 +75,6 @@ public class LoginService {
         return true;
     }
 
-    @Transactional
     public void resetFailedAttemptCountOnSuccess(UserProfileEntity userProfileEntity, int loginAttemptCount) {
         if (loginAttemptCount > 0) {
             userProfileEntity.setFailedLoginAttempts(0);

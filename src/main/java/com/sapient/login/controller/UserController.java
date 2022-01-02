@@ -31,7 +31,7 @@ public class UserController {
                                                     HttpServletRequest request) {
         String userId = userService.createUserProfile(userProfile);
         return ResponseEntity
-                .created(URI.create(request.getRequestURI().concat("/").concat(userId.toString())))
+                .created(URI.create(request.getRequestURI().concat("/").concat(userId)))
                 .build();
     }
 

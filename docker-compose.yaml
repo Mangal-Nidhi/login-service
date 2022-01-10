@@ -1,0 +1,36 @@
+version: "1.0"
+
+services:
+  login:
+    container_name: login-service
+    image: login-service
+    build:
+      context: .
+      dockerfile: login-service.dockerfile
+      args:
+        buildVersion: 1
+    environment:
+      - PORT=8083
+    depends_on:
+      - mongodb
+    ports:
+      - "8083:8083"
+    volumes:
+      - /data
+      #networks:
+      #   - backend
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - './data:/data/db'
+    #networks:
+    #  - backend
+  #
+  #networks:
+  #  backend:
+  #   internal: true #external:true for pre-existing connection
+  #   name: docker

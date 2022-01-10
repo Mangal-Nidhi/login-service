@@ -8,7 +8,7 @@ server:
     key-store: classpath:keystore.p12
 
 #mongodb
-spring.data.mongodb.host: localhost
+spring.data.mongodb.host: mongodb
 spring.data.mongodb.port: 27017
 spring.data.mongodb.database: userProfileCollection
 spring.data.mongodb.auto-index-creation: true

@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mongodb
+  template:
+    metadata:
+      labels:
+        name: mongodb
+    spec:
+      volumes:
+        - name: data
+          emptyDir: { }
+      containers:
+        - name: mongodb
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: data
+              mountPath: /data/db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: mongodb
+  name: mongodb
+spec:
+  #type: LoadBalancer
+  ports:
+    - port: 27017
+  selector:
+    name: mongodb
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: login-service
+  template:
+    metadata:
+      labels:
+        app: login-service
+    spec:
+      containers:
+        - name: login-service
+          image: docker.io/library/login-service:v3
+          ports:
+            - containerPort: 8083
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: login-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8083
+  selector:
+    app: login-service
+
+
+#use localhost:8083 to access the service when deployed via K8s

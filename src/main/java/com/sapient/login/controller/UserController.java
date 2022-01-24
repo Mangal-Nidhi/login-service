@@ -8,10 +8,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -36,19 +36,18 @@ public class UserController {
     }
 
     @GetMapping("{userId}")
-    @RolesAllowed("PS_USER")
+    @PreAuthorize("hasAuthority('PS_USER')")
     public ResponseEntity<UserProfile> getUserProfile(@PathVariable String userId) {
         return ResponseEntity.ok(userService.getUserProfile(userId));
     }
 
     @DeleteMapping("{userId}")
-    @RolesAllowed("PS_USER")
+    @PreAuthorize("hasAuthority('PS_USER')")
     public void deleteUserProfile(@PathVariable String userId) {
         userService.deleteUserProfile(userId);
     }
 
     @GetMapping("{userId}/confirm")
-    @RolesAllowed("PS_USER")
     public ResponseEntity<Object> confirmEmail(@PathVariable String userId) {
         userService.confirmEmailId(userId);
         return ResponseEntity.ok().build();

@@ -64,4 +64,18 @@ public class JWTBuilder {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
+
+    public String extractUsername(String jwt) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(getPrivateKey())
+                .parseClaimsJws(jwt).getBody();
+        return claims.getSubject();
+    }
+
+    public boolean validateToken(String jwt) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(getPrivateKey())
+                .parseClaimsJws(jwt).getBody();
+        return claims.getExpiration().toInstant().isAfter(Instant.now());
+    }
 }

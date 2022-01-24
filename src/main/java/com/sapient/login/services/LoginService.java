@@ -46,7 +46,7 @@ public class LoginService {
         resetFailedAttemptCountOnSuccess(userProfileEntity.get(), loginAttemptCount);
 
         return LoginResponse.builder()
-                .accessToken(jwtBuilder.getSignedJWT(userCredentials.getEmailId()))
+                .accessToken(jwtBuilder.getSignedJWT(userProfileEntity.get().getObjectId()))
                 .tokenType("Bearer")
                 .build();
     }

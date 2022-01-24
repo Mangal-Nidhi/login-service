@@ -6,9 +6,11 @@ import com.sapient.login.domain.UserCredentials;
 import com.sapient.login.services.LoginService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = LoginController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+@ImportAutoConfiguration(RefreshAutoConfiguration.class)
 class LoginControllerTest {
 
     @Autowired
